@@ -28,8 +28,6 @@ IPAddress APIP(10, 10, 10, 1);    // Private network for server
 // state:
 vector<Message> messages;
 vector<String> usernames = {"John Doe"};
-unsigned int id = 0;
-
  // standard api servers
 DNSServer dnsServer;
 ESP8266WebServer webServer(80);
@@ -71,7 +69,6 @@ void setup() {
   
   webServer.on("/messages", HTTP_POST, []() {
     Message m = parseMessage(webServer.arg("plain"));
-    m.id = id++;
     messages.push_back(m);
     webServer.send(200);
   });
