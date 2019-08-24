@@ -15,7 +15,7 @@ using std::vector;
 #define NAME "Commutr"
 
 const char * ssid = "eduroam";
-const char * username = "az2lou@uwaterloo.ca";
+const char * username = "tullom@mcmaster.ca";
 const char * password = "";
 
 HTTPClient http;
@@ -88,14 +88,15 @@ void setup() {
 void loop() { 
   dnsServer.processNextRequest();
   webServer.handleClient();
-  if(digitalRead(1) == HIGH) {
+  if(digitalRead(5) == HIGH) {
+    Serial.print("goog");
     connectToWifi();
     while(WiFi.status() != WL_CONNECTED) {
       delay(2000);
       Serial.print(WiFi.localIP());
     }
     digitalWrite(0, HIGH);
-    http.begin(http, "lkj")
+    //http.begin(http, "lkj");
     digitalWrite(0, LOW);
   }
 }
