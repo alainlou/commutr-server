@@ -157,7 +157,7 @@ button:active {
         let res = JSON.parse(this.response);
         console.log(res.messages);
         for(let message of res.messages) {
-          if(!seen.includes(id)) {
+          if(!seen.includes(message.id)) {
             var new_message = document.createElement("LI");
             new_message.innerHTML = message.username + ": " + message.text;
             textBox.appendChild(new_message);
