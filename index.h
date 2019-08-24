@@ -140,7 +140,7 @@ form {
 
   function getMessages() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'commutr.com/messages');
+    xhr.open('GET', '/messages');
     xhr.send();
   }
 
