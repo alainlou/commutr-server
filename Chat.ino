@@ -34,7 +34,11 @@ IPAddress APIP(10, 10, 10, 1);    // Private network for server
 String allMsgs="<i>*system restarted*</i>";
 vector<String> messages = {"*system restart*"};
 unsigned long bootTime=0, lastActivity=0, lastTick=0, tickCtr=0; // timers
-DNSServer dnsServer; ESP8266WebServer webServer(80); // standard api servers
+
+ // standard api servers
+DNSServer dnsServer;
+ESP8266WebServer webServer(80);
+
 void em(String s){ Serial.print(s); } 
 void emit(String s){ Serial.println(s); } // debugging
 String input(String argName) {
@@ -103,11 +107,11 @@ void setup() {
   WiFi.mode(WIFI_AP);
   WiFi.softAPConfig(APIP, APIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(CHATNAME);
-  dnsServer.start(DNS_PORT, "*", APIP);
+  dnsServer.start(DNS_PORT, "commutr.com", APIP);
   
   webServer.on("/", HTTP_POST, []() { 
     message();
-    webServer.send(200, "text/json"); 
+    webServer.send(200, "text/json");
   });
 
   webServer.on("/messages", HTTP_GET, []() {
@@ -135,5 +139,10 @@ void tick() {
   }
 }
 void loop() { 
-  if ((millis()-lastTick)>TICK_TIMER) {lastTick=millis(); tick();} 
-  dnsServer.processNextRequest(); webServer.handleClient(); }
+  if ((millis() - lastTick) > TICK_TIMER) {
+    lastTick=millis();
+    tick();
+  }
+  dnsServer.processNextRequest();
+  webServer.handleClient();
+}
