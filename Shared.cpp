@@ -33,6 +33,8 @@ vector<String> getDataMessage(String str) {
         "id": "id"
     }
   */
+  // replaces ':' with ';'
+  // should back up to text file before mutating string
   vector<String> resultMessage;
   for (int index = 0; index < 3; index++) {
     int start = str.indexOf(':');
