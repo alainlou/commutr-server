@@ -2,8 +2,8 @@ extern "C" {
   #include "user_interface.h"
   #include "wpa2_enterprise.h"
 }
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>             
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>         
 #include <ESP8266WebServer.h>
 
 #include "./DNSServer.h"  // Patched lib
@@ -24,9 +24,9 @@ const byte DNS_PORT = 53;  // Capture DNS requests on port 53
 const byte ACTIVITY_LED = 2;
 const byte ACTIVITY_REVERSE = 1; // turn off when active, not on.. needed for me
 IPAddress APIP(10, 10, 10, 1);    // Private network for server
+
 // state:
-String allMsgs="<i>*system restarted*</i>";
-vector<String> messages = {"*system restart*"};
+vector<Message> messages;
 vector<String> usernames = {"John Doe"};
 
  // standard api servers
@@ -34,7 +34,7 @@ DNSServer dnsServer;
 ESP8266WebServer webServer(80);
 
 String index() {
-  Serial.print("entered here");
+  Serial.println("entered here");
   return home_page;
 }
 
@@ -68,13 +68,17 @@ void setup() {
     webServer.send(200, "text/html", index());
   });
   
-  webServer.on("/messages", HTTP_POST, []() { 
-    messages.push_back(getMessage(webServer.arg("plain")));
+  webServer.on("/messages", HTTP_POST, []() {
+    Message m = parseMessage(webServer.arg("plain"));
+    messages.push_back(m);
     webServer.send(200);
   });
 
   webServer.on("/messages", HTTP_GET, []() {
-    webServer.send(200, "text/json", toJson(messages));
+    for(Message m : messages) {
+      Serial.println(m.toString());
+    }
+    webServer.send(200, "application/json", toJson(messages));
   });
 
   webServer.onNotFound([]() {

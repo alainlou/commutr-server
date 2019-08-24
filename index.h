@@ -13,7 +13,7 @@ body {
 }
 
 main {
-  background-color: #434343;
+  background-color: white;
   margin: 20px auto;
   max-width: 450px;
   padding: 20px;
@@ -64,7 +64,17 @@ form {
   opacity: 1;
 }
 
-
+button {
+  border: none;
+  flex: 0 2 100px;
+  height: 2.5rem;
+  background-color:#4CAF50;
+  padding: 1em 2em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 0.5rem #999;
+}
 
 button:hover {
   background-color: #3E8E41;
@@ -97,9 +107,15 @@ button:active {
 
   function chatSent() {
     var text = document.getElementById('message').value
-    var message = userName + ": " + text
-    updateMessage(userName, "0", message)
     document.getElementById('message').value = ''
+    var message = userName + ": " + text
+    var textBox = document.getElementById('history');
+    var new_message = document.createElement("LI");
+    new_message.innerHTML = message;
+    textBox.appendChild(new_message);
+    textBox.scrollTop = textBox.scrollHeight;
+
+    updateMessage(userName, text, "0")
   }
 
   function generateUserName() {
@@ -112,26 +128,38 @@ button:active {
     );
   }
 
-  function updateMessage(name, id, text) {
+  function updateMessage(name, text, id) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/messages');
     xhr.send(JSON.stringify({
       "name"    : name,
-      "id"      : id,
-      "message" : message
+      "message" : text,
+      "id"      : id      
     }));
-    var textBox = document.getElementById('history');
-    var message = document.createElement("LI");
-    message.innerHTML = text;
-    textBox.appendChild(message);
-    textBox.scrollTop = textBox.scrollHeight
   }
 
   function getMessages() {
+    console.log("getMessages() was called");
     var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+        var textBox = document.getElementById('history');
+        let l = JSON.parse(this.response);
+        console.log(l.messages);
+        for(let message of l.messages) {
+          var new_message = document.createElement("LI");
+          new_message.innerHTML = message;
+          textBox.appendChild(new_message);
+          textBox.scrollTop = textBox.scrollHeight;
+        }
+      }
+    }
     xhr.open('GET', '/messages');
     xhr.send();
+    setTimeout(getMessages, 2000);
   }
+  
+  getMessages();
 </script>
 
 <!DOCTYPE html>
@@ -142,18 +170,10 @@ button:active {
   </div>
   <div class="flex-container" id="messageForm">
     <input style="flex: 1 1 200px; height: 3em;" id="message" class="message" onkeypress="checkKey(event)" placeholder="Message">
-    <button style="
-      flex: 0 2 100px;
-      height: 3em;
-      background-color:#4CAF50;
-      padding: 8px 15px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 1px #999;" 
-    type="button" onclick="chatSent()">Send</button>
+    <button type="button" onclick="chatSent()">Send</button>
   </form>
 </main>
 
 </html>
+
 )=====";

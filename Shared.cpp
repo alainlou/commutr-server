@@ -39,14 +39,41 @@ vector<String> getDataMessage(String str) {
   for (int index = 0; index < 3; index++) {
     int start = str.indexOf(':');
     String message = "";
-    for (int i = start + 3; i < str.length(); ++i) {
-      if (str.charAt(i) == '\"')
-        break;
-      else
-        message += str.charAt(i);
+    for(int i = start+2; i < str.length(); ++i) {
+        if(str.charAt(i) == '\"')
+            break;
+        else
+            message += str.charAt(i);
     }
-    str[start] = ';';
-    resultMessage.push_back(message);
+    return message;
+}
+
+// function to parse through data object
+Message parseMessage(String str) {
+  /*
+    Data JSON Structure
+    {
+        "name" : "userName",
+        "message": "message",
+        "id": "id"
+    }
+  */
+  // replaces ':' with ';'
+  // should back up to text file before mutating string
+  vector<String> result;
+  for(int i = 0; i < str.length(); ++i) {
+    if(str.charAt(i) == ':') {
+      String data = "";
+      for(int j = i+2; j < str.length(); ++j) {
+        if(str.charAt(j) == '\"') {
+          i = j;
+          result.push_back(data);
+          break;
+        }
+        data += str.charAt(j);
+      }
+    }
   }
-  return resultMessage;
+  Message message(result[0], result[1], result[2]);
+  return message;
 }

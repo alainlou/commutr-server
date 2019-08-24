@@ -4,9 +4,12 @@
 #include <WString.h>
 #include <vector>
 
+#include "Message.h"
+
 using std::vector;
 
-String toJson(vector<String> vec);
+String toJson(vector<Message> vec);
 String getMessage(String str);
+Message parseMessage(String str);
 
 #endif
