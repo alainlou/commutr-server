@@ -104,12 +104,8 @@ form {
   function chatSent() {
     var text = document.getElementById('message').value
     var message = userName + ": " + text
-    var data = {
-      name: userName,
-      message: text
-    }
     console.log(message, data)
-    updateMessage(message)
+    updateMessage(userName, "0", message)
     document.getElementById('message').value = ''
     // return false
   }
@@ -126,7 +122,7 @@ form {
 
   function updateMessage(name, id, message) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'commutr.com/messages');
+    xhr.open('POST', '/messages');
     xhr.send(JSON.stringify({
       "name"    : name,
       "id"      : id,
