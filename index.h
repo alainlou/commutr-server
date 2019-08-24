@@ -98,11 +98,20 @@ button:active {
 </style>
 
 <script>
+  var id = 0;
   var userName = generateUserName();
+  var history = [];
 
   function checkKey(e) {
     if(e.keyCode == 13)
       chatSent();
+  }
+
+  function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
   function chatSent() {
@@ -114,7 +123,6 @@ button:active {
     new_message.innerHTML = message;
     textBox.appendChild(new_message);
     textBox.scrollTop = textBox.scrollHeight;
-
     updateMessage(userName, text, "0")
   }
 
@@ -128,13 +136,15 @@ button:active {
     );
   }
 
-  function updateMessage(name, text, id) {
+  function updateMessage(name, text) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/messages');
+    var new_id = uuid();
+    history.push(new_id);
     xhr.send(JSON.stringify({
       "name"    : name,
       "message" : text,
-      "id"      : id      
+      "id"      : new_id
     }));
   }
 
@@ -144,13 +154,15 @@ button:active {
     xhr.onreadystatechange = function() {
       if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
         var textBox = document.getElementById('history');
-        let l = JSON.parse(this.response);
-        console.log(l.messages);
-        for(let message of l.messages) {
-          var new_message = document.createElement("LI");
-          new_message.innerHTML = message;
-          textBox.appendChild(new_message);
-          textBox.scrollTop = textBox.scrollHeight;
+        let res = JSON.parse(this.response);
+        console.log(res.messages);
+        for(let message of res.messages) {
+          if(!history.includes(id)) {
+            var new_message = document.createElement("LI");
+            new_message.innerHTML = message.username + ": " + message.text;
+            textBox.appendChild(new_message);
+            textBox.scrollTop = textBox.scrollHeight;
+          }
         }
       }
     }

@@ -28,6 +28,7 @@ IPAddress APIP(10, 10, 10, 1);    // Private network for server
 // state:
 vector<Message> messages;
 vector<String> usernames = {"John Doe"};
+unsigned int id = 0;
 
  // standard api servers
 DNSServer dnsServer;
@@ -70,15 +71,13 @@ void setup() {
   
   webServer.on("/messages", HTTP_POST, []() {
     Message m = parseMessage(webServer.arg("plain"));
+    m.id = id++;
     messages.push_back(m);
     webServer.send(200);
   });
 
   webServer.on("/messages", HTTP_GET, []() {
-    for(Message m : messages) {
-      Serial.println(m.toString());
-    }
-    webServer.send(200, "application/json", toJson(messages));
+    webServer.send(200, "application/json", toJSON(messages));
   });
 
   webServer.onNotFound([]() {
@@ -91,14 +90,4 @@ void setup() {
 void loop() { 
   dnsServer.processNextRequest();
   webServer.handleClient();
-  if(digitalRead(5) == HIGH) {
-    Serial.print("goog");
-    connectToWifi();
-    while(WiFi.status() != WL_CONNECTED) {
-      delay(2000);
-      Serial.print(WiFi.localIP());
-    }
-    digitalWrite(0, HIGH);
-    digitalWrite(0, LOW);
-  }
 }

@@ -8,7 +8,7 @@
 
 using std::vector;
 
-String toJson(vector<Message> vec);
+String toJSON(vector<Message> vec);
 String getMessage(String str);
 Message parseMessage(String str);
 

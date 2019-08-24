@@ -1,14 +1,20 @@
 #include "Shared.h"
 
-String toJson(vector<String> vec) {
-  String response = "{\n\t\"messages\"\t:\t[";
-  for (int i = 0; i < vec.size() - 1; ++i) {
-    response += "\"" + vec[i] + "\", ";
-  }
-  response += "\"" + vec[vec.size() - 1] + "\"";
-  response += "]}";
-
-  return response;
+String toJSON(vector<Message> vec) {
+    if(vec.size() == 0) {
+      return "{ \"messages\": []}";
+    }
+    if(vec.size() == 1) {
+      return "{ \"messages\": [" + vec[0].toJSON() + "]}";
+    }
+    String response = "{ \"messages\": [";
+    for(int i = 0; i < vec.size()-1; ++i) {
+      response += vec[i].toJSON();
+      response += ",";
+    }
+    response += vec[vec.size()-1].toJSON();
+    response += "]}";
+    return response;
 }
 
 String getMessage(String str) {
@@ -74,6 +80,6 @@ Message parseMessage(String str) {
       }
     }
   }
-  Message message(result[0], result[1], result[2]);
-  return message;
+  Message m(result[0], result[1], result[2]);
+  return m;
 }
