@@ -1,8 +1,4 @@
 #include "Shared.h"
-#include <vector>
-#include <string.h>
-
-using std::vector;
 
 String toJson(vector<String> vec) {
     String response = "[";

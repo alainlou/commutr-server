@@ -110,15 +110,16 @@ void setup() {
   dnsServer.start(DNS_PORT, "commutr.com", APIP);
   
   webServer.on("/messages", HTTP_POST, []() { 
-    message();
-    webServer.send(200, "text/json");
+    messages.push_back(webServer.arg("message"));
+    webServer.send(200);
   });
 
   webServer.on("/messages", HTTP_GET, []() {
-
+    webServer.send(200, "text/json", toJson(messages));
   });
 
   webServer.onNotFound([]() { lastActivity=millis(); webServer.send(200, "text/html", index()); });
+
   webServer.begin();
 }
 void led(byte p){
