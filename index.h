@@ -91,15 +91,10 @@ form {
       <button type="button" onclick="chatSent()">Send</button>
     </form>
 </main>
-<!-- <script src="app.js"></script> -->
 <!-- <script src="https://code.jquery.com/jquery-3.1.1.js"></script> -->
 <script>
   var userName = generateUserName();
 
-  // $('#messageForm').submit(function () {
-  //     chatSent();
-  //     return false;
-  //   });
 
   function chatSent() {
     var text = document.getElementById('message').value
@@ -108,6 +103,10 @@ form {
     updateMessage(userName, "0", message)
     document.getElementById('message').value = ''
     // return false
+  }
+
+  function updateServer(){
+    var xhr = new XMLHttpRequest();
   }
 
   function generateUserName() {
