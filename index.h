@@ -158,10 +158,11 @@ button:active {
         console.log(res.messages);
         for(let message of res.messages) {
           if(!seen.includes(message.id)) {
+            seen.push(message.id);
             var new_message = document.createElement("LI");
             new_message.innerHTML = message.username + ": " + message.text;
             textBox.appendChild(new_message);
-            textBox.scrollTop = textBox.scrollHeight;
+            textBox.scrollTop = textBox.scrollHeight;            
           }
         }
       }
