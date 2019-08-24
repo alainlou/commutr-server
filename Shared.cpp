@@ -45,7 +45,7 @@ vector<String> getDataMessage(String str) {
       else
         message += str.charAt(i);
     }
-    str[start] = ";";
+    str[start] = ';';
     resultMessage.push_back(message);
   }
   return resultMessage;

@@ -1,7 +1,9 @@
 const char home_page[] PROGMEM = R"=====(
+<meta charset="ISO-8859-1"> 
+
 <style>
 body {
-  background-color: #000000;
+  background-color: white;
   color: #ffffff;
   font-family: 'Roboto', sans-serif;
   margin: 20px;
@@ -23,12 +25,12 @@ main {
 ul {
   background-color: #434343;
   color: #f0f0f0;
-  font-family: 'courier', Arial, sans-serif;
+  font-family: Arial, sans-serif;
   margin: 10px auto;
   list-style: none;
   padding-right: 10px auto;
-  overflow-x:hidden;
-  overflow-y:visible;
+  overflow-x: hidden;
+  overflow-y: visible;
   height:230px;
 }
 
@@ -41,13 +43,13 @@ li:nth-child(odd){
   color: #A4A4A4;
 }
 
-ol {
+/* ol {
   background-color: #434343;
   color: #f0f0f0;
   font-family: 'courier', Arial, sans-serif;
   margin: 00px auto;
   list-style: none;
-}
+} */
 
 h1 {
   margin: 0px auto;
@@ -62,14 +64,22 @@ form {
   opacity: 1;
 }
 
-.message {
-  opacity: 1;
-  font-family: 'courier', Arial;
+
+
+button:hover {
+  background-color: #3E8E41;
 }
+
+button:active {
+  background-color: #3E8E41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
 
 .initials {
   opacity: 1;
-  font-family: 'courier', Arial;
+  font-family: Arial;
 }
 
 .history {
@@ -77,36 +87,19 @@ form {
 }
 </style>
 
-<!DOCTYPE html>
-<link rel="stylesheet" href="style.css">
-
-<main>
-  <div style="width:420px;height:250px;line-height:1.6em; overflow-y: scroll; padding:0px;">
-    <ul id="history">
-    </ul>
-  </div>
-    <form method= id="messageForm" onsubmit="return false">
-      <!-- <input id="initials" class="initials" maxlength="3" placeholder="Initials"> -->
-      <input id="message" class="message" placeholder="Message">
-      <button type="button" onclick="chatSent()">Send</button>
-    </form>
-</main>
-<!-- <script src="https://code.jquery.com/jquery-3.1.1.js"></script> -->
 <script>
   var userName = generateUserName();
 
+  function checkKey(e) {
+    if(e.keyCode == 13)
+      chatSent();
+  }
 
   function chatSent() {
     var text = document.getElementById('message').value
     var message = userName + ": " + text
-    console.log(message, data)
     updateMessage(userName, "0", message)
     document.getElementById('message').value = ''
-    // return false
-  }
-
-  function updateServer(){
-    var xhr = new XMLHttpRequest();
   }
 
   function generateUserName() {
@@ -119,7 +112,7 @@ form {
     );
   }
 
-  function updateMessage(name, id, message) {
+  function updateMessage(name, id, text) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/messages');
     xhr.send(JSON.stringify({
@@ -128,7 +121,8 @@ form {
       "message" : message
     }));
     var textBox = document.getElementById('history');
-    var message = document.createTextNode(message);
+    var message = document.createElement("LI");
+    message.innerHTML = text;
     textBox.appendChild(message);
     textBox.scrollTop = textBox.scrollHeight
   }
@@ -138,8 +132,28 @@ form {
     xhr.open('GET', '/messages');
     xhr.send();
   }
-
 </script>
+
+<!DOCTYPE html>
+<main>
+  <div style="width: 100%;">
+    <ul id="history">
+    </ul>
+  </div>
+  <div class="flex-container" id="messageForm">
+    <input style="flex: 1 1 200px; height: 3em;" id="message" class="message" onkeypress="checkKey(event)" placeholder="Message">
+    <button style="
+      flex: 0 2 100px;
+      height: 3em;
+      background-color:#4CAF50;
+      padding: 8px 15px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 1px #999;" 
+    type="button" onclick="chatSent()">Send</button>
+  </form>
+</main>
 
 </html>
 )=====";

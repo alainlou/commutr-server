@@ -84,7 +84,6 @@ void setup() {
   webServer.begin();
 }
 
-
 void loop() { 
   dnsServer.processNextRequest();
   webServer.handleClient();
@@ -96,7 +95,6 @@ void loop() {
       Serial.print(WiFi.localIP());
     }
     digitalWrite(0, HIGH);
-    //http.begin(http, "lkj");
     digitalWrite(0, LOW);
   }
 }
