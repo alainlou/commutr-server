@@ -124,16 +124,27 @@ form {
     );
   }
 
-  function updateMessage(message) {
-    // $('<li>').text(message).appendTo('#history');
+  function updateMessage(name, id, message) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'commutr.com/messages');
+    xhr.send(JSON.stringify({
+      "name"    : name,
+      "id"      : id,
+      "message" : message
+    }));
     var textBox = document.getElementById('history');
     var message = document.createTextNode(message);
     textBox.appendChild(message);
-    // textBox.scrollTop = textBox.scrollHeight
+    textBox.scrollTop = textBox.scrollHeight
+  }
+
+  function getMessages() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'commutr.com/messages');
+    xhr.send();
   }
 
 </script>
-
 
 </html>
 )=====";
