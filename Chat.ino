@@ -1,6 +1,3 @@
-// PopupChat - a one-screen system to share things locally with your friends via WIFI
-// based on: Captive Portal by: M. Ray Burnette 20150831
-// homo est bulae
 #include <ESP8266WiFi.h>             
 #include <ESP8266WebServer.h>
 
@@ -9,7 +6,6 @@
 
 using std::vector;
 
-// config
 #define CHATNAME "Commutr"
 #define BLURB "Hack the 6ix"
 #define COMPLAINTSTO "tlack"
@@ -101,16 +97,20 @@ String posted() {
 }
 void setup() {
   Serial.begin(115200); 
-  emit("setup"); 
   bootTime = lastActivity = millis();
   pinMode(ACTIVITY_LED, OUTPUT); led(1);
   WiFi.mode(WIFI_AP);
   WiFi.softAPConfig(APIP, APIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(CHATNAME);
+
   dnsServer.start(DNS_PORT, "commutr.com", APIP);
+
+  webServer.on("/", []() {
+    webServer.send(200, "text/html", index());
+  });
   
   webServer.on("/messages", HTTP_POST, []() { 
-    messages.push_back(webServer.arg("message"));
+    messages.push_back(getMessage(webServer.arg("plain")));
     webServer.send(200);
   });
 
@@ -118,7 +118,9 @@ void setup() {
     webServer.send(200, "text/json", toJson(messages));
   });
 
-  webServer.onNotFound([]() { lastActivity=millis(); webServer.send(200, "text/html", index()); });
+  webServer.onNotFound([]() {
+    webServer.send(404);
+  });
 
   webServer.begin();
 }

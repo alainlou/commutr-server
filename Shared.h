@@ -7,5 +7,6 @@
 using std::vector;
 
 String toJson(vector<String> vec);
+String getMessage(String str);
 
 #endif
