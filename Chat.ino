@@ -1,13 +1,17 @@
 // PopupChat - a one-screen system to share things locally with your friends via WIFI
 // based on: Captive Portal by: M. Ray Burnette 20150831
 // homo est bulae
-#include <ESP8266WiFi.h>
-#include "./DNSServer.h"                  // Patched lib
+#include <ESP8266WiFi.h>             
 #include <ESP8266WebServer.h>
 
+#include "./DNSServer.h"  // Patched lib
+#include "./Shared.h"
+
+using std::vector;
+
 // config
-#define CHATNAME "Instant Anonymous Chatroom"
-#define BLURB "Experimental local area chat"
+#define CHATNAME "Commutr"
+#define BLURB "Hack the 6ix"
 #define COMPLAINTSTO "tlack"
 #define INDEXTITLE "Howdy friend!"
 #define INDEXBANNER "This is a local-only, non-cloud chat room, that you use through your phone's web browser. Messages are deleted every now and then. Have fun and be nice to each other! <a href=/faq>See frequently asked questions..</a>"
@@ -29,6 +33,7 @@ const byte ACTIVITY_REVERSE = 1; // turn off when active, not on.. needed for me
 IPAddress APIP(10, 10, 10, 1);    // Private network for server
 // state:
 String allMsgs="<i>*system restarted*</i>";
+vector<String> messages = {"*system restart*"};
 unsigned long bootTime=0, lastActivity=0, lastTick=0, tickCtr=0; // timers
 DNSServer dnsServer; ESP8266WebServer webServer(80); // standard api servers
 void em(String s){ Serial.print(s); } 
@@ -78,8 +83,16 @@ String index() {
     "<i>remember:</i> include your name or something like it</i><br/>"+
     "<textarea name=m></textarea><br/><input type=submit value=send></form>" + footer();
 }
+void message() {
+  String msg = input("m");
+  messages.push_back(msg);
+  allMsgs="<li>" + msg + "</li>" + allMsgs;
+  emit("posted:" + msg);
+}
 String posted() {
-  String msg=input("m"); allMsgs="<li>"+msg+"</li>"+allMsgs;
+  String msg=input("m");
+  messages.push_back(msg);
+  allMsgs="<li>"+msg+"</li>"+allMsgs;
   emit("posted: "+msg); 
   return header(POSTEDTITLE) + POSTEDBANNER + "<article>"+msg+"</article><a href=/>Back to index</a>" + footer();
 }
@@ -92,8 +105,21 @@ void setup() {
   WiFi.softAPConfig(APIP, APIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(CHATNAME);
   dnsServer.start(DNS_PORT, "*", APIP);
+  
+  webServer.on("/", HTTP_POST, []() { 
+    message();
+    webServer.send(HTTP_CODE, "text/json"); 
+  });
+
+  webServer.on("/messages", HTTP_GET, []() {
+
+  });
+
+  //
   webServer.on("/post",[]() { webServer.send(HTTP_CODE, "text/html", posted()); });
   webServer.on("/faq",[]() { webServer.send(HTTP_CODE, "text/html", faq()); });
+  //
+
   webServer.onNotFound([]() { lastActivity=millis(); webServer.send(HTTP_CODE, "text/html", index()); });
   webServer.begin();
 }
