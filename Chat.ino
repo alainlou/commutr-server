@@ -24,7 +24,6 @@ const String FAQ = "this is an experiment at making a chat room that only works 
 
 // boring
 #define VER "@tlack/popup R0"
-const byte HTTP_CODE = 200; // nyi? 511; // rfc6585
 const byte DNS_PORT = 53;  // Capture DNS requests on port 53
 const byte TICK_TIMER = 1000;
 const byte ACTIVITY_DURATION = 60 * TICK_TIMER; // how many seconds should the LED stay on after last visit?
@@ -108,7 +107,7 @@ void setup() {
   
   webServer.on("/", HTTP_POST, []() { 
     message();
-    webServer.send(HTTP_CODE, "text/json"); 
+    webServer.send(200, "text/json"); 
   });
 
   webServer.on("/messages", HTTP_GET, []() {
@@ -116,11 +115,11 @@ void setup() {
   });
 
   //
-  webServer.on("/post",[]() { webServer.send(HTTP_CODE, "text/html", posted()); });
-  webServer.on("/faq",[]() { webServer.send(HTTP_CODE, "text/html", faq()); });
+  webServer.on("/post",[]() { webServer.send(200, "text/html", posted()); });
+  webServer.on("/faq",[]() { webServer.send(200, "text/html", faq()); });
   //
 
-  webServer.onNotFound([]() { lastActivity=millis(); webServer.send(HTTP_CODE, "text/html", index()); });
+  webServer.onNotFound([]() { lastActivity=millis(); webServer.send(200, "text/html", index()); });
   webServer.begin();
 }
 void led(byte p){
