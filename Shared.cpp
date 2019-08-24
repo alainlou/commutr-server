@@ -1,12 +1,11 @@
 #include "Shared.h"
-#include <string>
 #include <vector>
+#include <string.h>
 
-using std::string;
 using std::vector;
 
-string toJson(vector<string> vec) {
-    string response = "[";
+String toJson(vector<String> vec) {
+    String response = "[";
     for(int i = 0; i < vec.size()-1; ++i) {
         response += vec[i] + ", ";
     }

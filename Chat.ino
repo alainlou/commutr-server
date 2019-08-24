@@ -109,7 +109,7 @@ void setup() {
   WiFi.softAP(CHATNAME);
   dnsServer.start(DNS_PORT, "commutr.com", APIP);
   
-  webServer.on("/", HTTP_POST, []() { 
+  webServer.on("/messages", HTTP_POST, []() { 
     message();
     webServer.send(200, "text/json");
   });
@@ -117,11 +117,6 @@ void setup() {
   webServer.on("/messages", HTTP_GET, []() {
 
   });
-
-  //
-  webServer.on("/post",[]() { webServer.send(200, "text/html", posted()); });
-  webServer.on("/faq",[]() { webServer.send(200, "text/html", faq()); });
-  //
 
   webServer.onNotFound([]() { lastActivity=millis(); webServer.send(200, "text/html", index()); });
   webServer.begin();
