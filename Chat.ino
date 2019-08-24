@@ -29,6 +29,7 @@ IPAddress APIP(10, 10, 10, 1);    // Private network for server
 // state:
 String allMsgs="<i>*system restarted*</i>";
 vector<String> messages = {"*system restart*"};
+vector<String> usernames = {"John Doe"};
 unsigned long bootTime=0, lastActivity=0, lastTick=0, tickCtr=0; // timers
 
  // standard api servers
@@ -82,23 +83,24 @@ String index() {
     "<i>remember:</i> include your name or something like it</i><br/>"+
     "<textarea name=m></textarea><br/><input type=submit value=send></form>" + footer();
 }
-void message() {
-  String msg = input("m");
-  messages.push_back(msg);
-  allMsgs="<li>" + msg + "</li>" + allMsgs;
-  emit("posted:" + msg);
-}
-String posted() {
-  String msg=input("m");
-  messages.push_back(msg);
-  allMsgs="<li>"+msg+"</li>"+allMsgs;
-  emit("posted: "+msg); 
-  return header(POSTEDTITLE) + POSTEDBANNER + "<article>"+msg+"</article><a href=/>Back to index</a>" + footer();
-}
+//OBSOLETE FUNCTIONS
+// void message() {
+//   String msg = input("m");
+//   messages.push_back(msg);
+//   allMsgs="<li>" + msg + "</li>" + allMsgs;
+//   emit("posted:" + msg);
+// }
+// String posted() {
+//   String msg=input("m");
+//   messages.push_back(msg);
+//   allMsgs="<li>"+msg+"</li>"+allMsgs;
+//   emit("posted: "+msg); 
+//   return header(POSTEDTITLE) + POSTEDBANNER + "<article>"+msg+"</article><a href=/>Back to index</a>" + footer();
+// }
 void setup() {
   Serial.begin(115200); 
   bootTime = lastActivity = millis();
-  pinMode(ACTIVITY_LED, OUTPUT); led(1);
+  pinMode(ACTIVITY_LED, OUTPUT); //led(1);
   WiFi.mode(WIFI_AP);
   WiFi.softAPConfig(APIP, APIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(CHATNAME);
@@ -124,16 +126,16 @@ void setup() {
 
   webServer.begin();
 }
-void led(byte p){
-  byte on=p^ACTIVITY_REVERSE; emit("led"+String(on));
-  digitalWrite(ACTIVITY_LED, on ? HIGH : LOW);
-}
+// void led(byte p){
+//   byte on=p^ACTIVITY_REVERSE; emit("led"+String(on));
+//   digitalWrite(ACTIVITY_LED, on ? HIGH : LOW);
+// }
 void tick() {
   String tickCs=String(tickCtr++); // emit("tick #"+tickCs+" @"+String(millis()));
   if ((millis() - lastActivity) < ACTIVITY_DURATION) {
-    em("+"); led(1);
+    em("+"); //led(1);
   } else {
-    em("-"); lastActivity = 0; led(0);
+    em("-"); lastActivity = 0; //led(0);
   }
 }
 void loop() { 

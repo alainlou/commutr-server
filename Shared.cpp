@@ -14,7 +14,7 @@ String toJson(vector<String> vec) {
 String getMessage(String str) {
     int start = str.indexOf(':');
     String message = "";
-    for(int i = start+3; i < str.length(); ++i) {
+    for(int i = start+1; i < str.length(); ++i) {
         if(str.charAt(i) == '\"')
             break;
         else
