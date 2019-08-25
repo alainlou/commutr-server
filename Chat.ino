@@ -15,9 +15,10 @@ using std::vector;
 #define NAME "Commutr"
 
 const char * ssid = "eduroam";
-const char * username = "tullom@mcmaster.ca";
+const char * username = "az2lou@uwaterloo.ca";
 const char * password = "";
 
+WiFiClient wifi;
 HTTPClient http;
 
 const byte DNS_PORT = 53;  // Capture DNS requests on port 53
@@ -33,11 +34,30 @@ DNSServer dnsServer;
 ESP8266WebServer webServer(80);
 
 String index() {
-  Serial.println("entered here");
   return home_page;
 }
 
-void connectToWifi() {
+void setup() {
+  Serial.begin(115200);
+
+  // Onboard Blue Light
+  pinMode(0, OUTPUT);  
+  digitalWrite(0, LOW);
+
+  // Connection Status
+  pinMode(4, OUTPUT);
+  digitalWrite(4, LOW);
+
+  // Push Button
+  pinMode(5, INPUT);
+
+  // Both Station and Access Point
+  WiFi.mode(WIFI_AP_STA);
+
+  // Connect to WiFi
+  Serial.println("Connecting to: ");
+  Serial.println(ssid);
+
   wifi_station_disconnect();
   struct station_config wifi_config;
   memset(&wifi_config, 0, sizeof(wifi_config));
@@ -51,13 +71,15 @@ void connectToWifi() {
   wifi_station_set_enterprise_username((uint8*)username, strlen(username));
   wifi_station_set_enterprise_password((uint8*)password, strlen(password));
   wifi_station_connect();
-}
 
-void setup() {
-  Serial.begin(115200);
-  pinMode(ACTIVITY_LED, OUTPUT);
-  digitalWrite(ACTIVITY_LED, LOW);
-  WiFi.mode(WIFI_AP);
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(2000);
+    Serial.println(WiFi.localIP());
+  }
+  Serial.println();
+  digitalWrite(4, HIGH);
+
+  // Local access point
   WiFi.softAPConfig(APIP, APIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(NAME);
 
@@ -87,4 +109,10 @@ void setup() {
 void loop() { 
   dnsServer.processNextRequest();
   webServer.handleClient();
+  if(digitalRead(5) == HIGH) {
+    Serial.println("Backing up to the server!");
+    http.begin(wifi, "http://alainlou.api.stdlib.com/enghack@dev/update/?space=E7%20Atrium&traffic=Pretty%20busy");
+    int httpCode = http.GET();
+    delay(2000);
+  }
 }

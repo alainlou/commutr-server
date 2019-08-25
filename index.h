@@ -1,111 +1,147 @@
 const char home_page[] PROGMEM = R"=====(
+<!-- <!DOCTYPE html> -->
 <meta charset="ISO-8859-1"> 
-
 <style>
-body {
-  background-color: white;
-  color: #ffffff;
-  font-family: 'Roboto', sans-serif;
-  margin: 20px;
-  padding-top: 40px;
-  background-size: cover;
-  background-repeat: repeat-y;
-}
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
 
-main {
-  background-color: white;
-  margin: 20px auto;
-  max-width: 450px;
-  padding: 20px;
-  border-radius: 8px;
-  opacity: 0.8;
-  color: #ffffff;
-}
+    ::-webkit-scrollbar-track {
+        background: #696969;
+        border-radius: 10px;
+    }
 
-ul {
-  background-color: #434343;
-  color: #f0f0f0;
-  font-family: Arial, sans-serif;
-  margin: 10px auto;
-  list-style: none;
-  padding-right: 10px auto;
-  overflow-x: hidden;
-  overflow-y: visible;
-  height:230px;
-}
+    ::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 10px;
+    }
 
-li {
-  padding-right: 20px auto;
-  padding-left: -60px auto;
-}
+    ::-webkit-scrollbar-thumb:hover {
+        background: #434343;
+    }
 
-li:nth-child(odd){
-  color: #A4A4A4;
-}
+    body {
+        background-color: #000;
+        color: #434343;
+        font-family: 'Roboto', sans-serif;
+        background-size: cover;
+    }
 
-/* ol {
-  background-color: #434343;
-  color: #f0f0f0;
-  font-family: 'courier', Arial, sans-serif;
-  margin: 00px auto;
-  list-style: none;
-} */
+    main {
+        background-color: #000;
+        margin: 20px auto;
+        max-width: 350px;
+        /* padding: 20px; */
+        border-radius: 8px;
+        opacity: 0.8;
+        color: #ffffff;
+    }
 
-h1 {
-  margin: 0px auto;
-  text-align: center;
-  color: #ffffff;
-  font-family: "Lucida Console", Monaco, monospace;
-}
+    ul {
+        background-color: #000;
+        /* color: #008f11; */
+        /* color: #00bfff; */
+        font-family: monaco, Consolas, "Lucida Console", monospace;
+        font-size: 18px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 400;
+        line-height: 30px;
+        padding-left: 10px;
+        /* padding-top: 10px; */
+        list-style: none;
+        padding-right: 10px auto;
+        overflow-x: hidden;
+        /* overflow-y: hidden; */
+        height: 480px;
+    }
 
-form {
-  background-color: #434343;
-  color: #ffffff;
-  opacity: 1;
-}
+    li {
+        padding-right: 20px auto;
+        padding-left: -60px auto;
+    }
 
-button {
-  border: none;
-  flex: 0 2 100px;
-  height: 2.5rem;
-  background-color:#4CAF50;
-  padding: 1em 2em;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  box-shadow: 0 0.5rem #999;
-}
+    button {
+        border: none;
+        height: 75px;
+        background-color: #4CAF50;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 4px;
+    }
 
-button:hover {
-  background-color: #3E8E41;
-}
+    .container {
+        background-color: #434343;
+        justify-content: space-between;
+        flex-direction: column;
+        height: 10px;
+        display: flex;
+    }
 
-button:active {
-  background-color: #3E8E41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
+    .container .btn-holder {
+        /* justify-content: flex-end; */
+        display: flex;
+    }
 
+    button:hover {
+        background-color: #3E8E41;
+    }
 
-.initials {
-  opacity: 1;
-  font-family: Arial;
-}
+    button:active {
+        background-color: #3E8E41;
+        transform: translateY(4px);
+    }
 
-.history {
-  height: 200px;
-}
+    p {
+        margin: 0px auto;
+        color: #5fff00;
+        font-family: monaco, Consolas, "Lucida Console", monospace;
+        font-size: 18px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 400;
+        line-height: 30px;
+    }
+
+    /* .initials {
+        opacity: 1;
+        font-family: Arial;
+    } */
+
+    .history {
+        height: 300px;
+    }
 </style>
 
 <script>
-  var id = 0;
-  var userName = generateUserName();
-  var history = [];
+    var id = 0;
+    var userName = generateUserName();
+    var seen = [];
+    var welcomeText = "Welcome to Commutr! Say hi to all the people you're travelling with!"
+    var i = 0;
+    var speed = 50;
 
-  function checkKey(e) {
-    if(e.keyCode == 13)
-      chatSent();
-  }
+    function setRandomColor() {
+        let colors = ["#008f1", "#00bfff", "#af0000", "#af00af", "#afff00", "#d7ff00", "#d7ff00"]
+        return colors[Math.floor(Math.random() * colors.length)]
+    }
+
+    function typewriter() {
+        if (i < welcomeText.length) {
+            document.getElementById("welcomeText").innerHTML += welcomeText.charAt(i);
+            i++;
+            setTimeout(typewriter, speed);
+        }
+    }
+
+    window.onload = function () {
+        typewriter();
+    };
+
+    function checkKey(e) {
+        if(e.keyCode == 13)
+            chatSent();
+    }
 
   function uuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -177,14 +213,16 @@ button:active {
 
 <!DOCTYPE html>
 <main>
-  <div style="width: 100%;">
-    <ul id="history">
-    </ul>
-  </div>
-  <div class="flex-container" id="messageForm">
-    <input style="flex: 1 1 200px; height: 3em;" id="message" class="message" onkeypress="checkKey(event)" placeholder="Message">
-    <button type="button" onclick="chatSent()">Send</button>
-  </form>
+    <div style="width: 100%;">
+        <p id="welcomeText"></p>
+        <ul id="history">
+        </ul>
+    </div>
+    <div class="container" id="messageForm">
+        <input id="message" class="message" onkeypress="checkKey(event)" placeholder="Type a message"
+            autocomplete="off">
+        <button type="button" onclick="chatSent()">Send</button>
+    </div>
 </main>
 
 </html>
