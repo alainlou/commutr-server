@@ -111,7 +111,7 @@ void loop() {
   webServer.handleClient();
   if(digitalRead(5) == HIGH) {
     Serial.println("Backing up to the server!");
-    http.begin(wifi, "http://alainlou.api.stdlib.com/enghack@dev/update/?space=E7%20Atrium&traffic=Pretty%20busy");
+    http.begin(wifi, "http://100.64.219.109:5000/");
     int httpCode = http.GET();
     delay(2000);
   }
