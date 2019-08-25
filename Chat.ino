@@ -128,6 +128,6 @@ void loop() {
       int httpCode = http.POST(message);
       http.end();
     }
-    delay(3000);
+    delay(2000);
   }
 }
