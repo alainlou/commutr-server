@@ -5,6 +5,7 @@ extern "C" {
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>         
 #include <ESP8266WebServer.h>
+#include <ArduinoJson.h>
 
 #include "./DNSServer.h"  // Patched lib
 #include "./Shared.h"
@@ -111,8 +112,22 @@ void loop() {
   webServer.handleClient();
   if(digitalRead(5) == HIGH) {
     Serial.println("Backing up to the server!");
-    http.begin(wifi, "http://100.64.219.109:5000/");
-    int httpCode = http.GET();
-    delay(2000);
+    http.addHeader("Content-Type", "application/json");
+    const int capacity = JSON_OBJECT_SIZE(10);
+    Serial.println(messages.size());
+    for(int i = 0; i < messages.size(); ++i) {
+      http.begin(wifi, "http://100.64.219.109:5000/");
+      Message m = messages[i];
+      StaticJsonDocument<capacity> document;
+      document["username"] = m.username;
+      document["text"] = m.text;
+      document["id"] = m.id;
+      char message[400];
+      serializeJson(document, message, sizeof(message));
+      Serial.println(message);
+      int httpCode = http.POST(message);
+      http.end();
+    }
+    delay(3000);
   }
 }

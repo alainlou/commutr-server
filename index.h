@@ -151,6 +151,8 @@ const char home_page[] PROGMEM = R"=====(
   }
 
   function chatSent() {
+    if(document.getElementById('message').value === '')
+        return;
     var text = document.getElementById('message').value
     document.getElementById('message').value = ''
     var message = userName + ": " + text
